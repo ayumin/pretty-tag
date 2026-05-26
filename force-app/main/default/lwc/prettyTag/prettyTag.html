@@ -1,0 +1,38 @@
+<template>
+    <div class="slds-form-element slds-form-element_stacked">
+        <template if:true={label}>
+            <label class="slds-form-element__label">{label}</label>
+        </template>
+        <div class="slds-form-element__control">
+            <div class="slds-form-element__static">
+                <div class="tag-container">
+                    <template if:false={hasTags}>
+                        <span class="empty-placeholder">値を追加</span>
+                    </template>
+                    <template for:each={tagItems} for:item="tag">
+                        <span key={tag.id} class={tag.colorClass} title="クリックで削除">
+                            {tag.label}
+                            <button
+                                class="tag-remove-btn"
+                                data-value={tag.label}
+                                onclick={removeTag}
+                                aria-label="削除">✕</button>
+                        </span>
+                    </template>
+                </div>
+            </div>
+        </div>
+        <template if:true={hasOptions}>
+            <div class="slds-form-element__control slds-var-m-top_xx-small">
+                <lightning-combobox
+                    label=""
+                    placeholder="＋ タグを追加..."
+                    value=""
+                    options={availableOptions}
+                    onchange={addTag}
+                    variant="label-hidden">
+                </lightning-combobox>
+            </div>
+        </template>
+    </div>
+</template>
