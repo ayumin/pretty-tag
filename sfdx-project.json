@@ -1,8 +1,8 @@
 {
   "packageDirectories": [
     {
-      "versionName": "ver 0.1",
-      "versionNumber": "0.1.0.NEXT",
+      "versionName": "ver 0.1.2",
+      "versionNumber": "0.1.2.NEXT",
       "path": "force-app",
       "default": true,
       "package": "pretty-tag",
@@ -16,6 +16,8 @@
   "packageAliases": {
     "pretty-tag": "0HoQ800000004GXKAY",
     "pretty-tag@0.1.0-1": "04tQ80000003PEnIAM",
-    "pretty-tag@0.1.0-2": "04tQ80000003PGPIA2"
+    "pretty-tag@0.1.0-2": "04tQ80000003PGPIA2",
+    "pretty-tag@0.1.1-1": "04tQ80000003POTIA2",
+    "pretty-tag@0.1.1-2": "04tQ80000003PQ5IAM"
   }
 }
