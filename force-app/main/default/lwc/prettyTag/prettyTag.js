@@ -31,6 +31,7 @@ export default class PrettyTag extends LightningElement {
 
     @track _selectedValues = null;
     @track _fieldDescriptor = null;
+    @track _showDropdown = false;
 
     get _fields() {
         if (this.objectApiName && this.fieldApiName) {
@@ -89,6 +90,10 @@ export default class PrettyTag extends LightningElement {
         return this.availableOptions.length > 0;
     }
 
+    toggleDropdown() {
+        this._showDropdown = true;
+    }
+
     removeTag(event) {
         const valueToRemove = event.currentTarget.dataset.value;
         this._selectedValues = this.selectedValues.filter(v => v !== valueToRemove);
@@ -99,6 +104,7 @@ export default class PrettyTag extends LightningElement {
         const valueToAdd = event.detail.value;
         if (!valueToAdd) return;
         this._selectedValues = [...this.selectedValues, valueToAdd];
+        this._showDropdown = false;
         this._save();
     }
 

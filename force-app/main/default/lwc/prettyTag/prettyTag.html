@@ -19,20 +19,23 @@
                                 aria-label="削除">✕</button>
                         </span>
                     </template>
+                    <template if:true={hasOptions}>
+                        <template if:false={_showDropdown}>
+                            <button class="add-tag-btn" onclick={toggleDropdown}>＋ タグを追加</button>
+                        </template>
+                        <template if:true={_showDropdown}>
+                            <lightning-combobox
+                                label=""
+                                placeholder="タグを選択..."
+                                value=""
+                                options={availableOptions}
+                                onchange={addTag}
+                                variant="label-hidden">
+                            </lightning-combobox>
+                        </template>
+                    </template>
                 </div>
             </div>
         </div>
-        <template if:true={hasOptions}>
-            <div class="slds-form-element__control slds-var-m-top_xx-small">
-                <lightning-combobox
-                    label=""
-                    placeholder="＋ タグを追加..."
-                    value=""
-                    options={availableOptions}
-                    onchange={addTag}
-                    variant="label-hidden">
-                </lightning-combobox>
-            </div>
-        </template>
     </div>
 </template>
