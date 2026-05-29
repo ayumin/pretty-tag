@@ -9,15 +9,15 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
-            <property name="fieldApiName" type="String" label="Field API Name" description="Multiple Picklist フィールドの API 名 (例: Tags__c)" required="true" />
+            <property name="fieldApiName" type="String" label="Multiple Picklist Field" description="このオブジェクトの Multiple Picklist 項目を表示ラベルから選択" datasource="apex://PrettyTagMultiPicklistFieldProvider" required="true" />
             <property name="label" type="String" label="Label" description="タグ一覧の上に表示するラベル（省略可）" />
         </targetConfig>
         <targetConfig targets="lightning__AppPage">
-            <property name="fieldApiName" type="String" label="Field API Name" description="Multiple Picklist フィールドの API 名 (例: Tags__c)" required="true" />
+            <property name="fieldApiName" type="String" label="Multiple Picklist Field" description="このオブジェクトの Multiple Picklist 項目を表示ラベルから選択" datasource="apex://PrettyTagMultiPicklistFieldProvider" required="true" />
             <property name="label" type="String" label="Label" description="タグ一覧の上に表示するラベル（省略可）" />
         </targetConfig>
         <targetConfig targets="lightning__HomePage">
-            <property name="fieldApiName" type="String" label="Field API Name" description="Multiple Picklist フィールドの API 名 (例: Tags__c)" required="true" />
+            <property name="fieldApiName" type="String" label="Multiple Picklist Field" description="このオブジェクトの Multiple Picklist 項目を表示ラベルから選択" datasource="apex://PrettyTagMultiPicklistFieldProvider" required="true" />
             <property name="label" type="String" label="Label" description="タグ一覧の上に表示するラベル（省略可）" />
         </targetConfig>
     </targetConfigs>

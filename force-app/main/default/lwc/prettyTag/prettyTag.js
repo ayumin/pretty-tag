@@ -30,26 +30,72 @@ export default class PrettyTag extends LightningElement {
     @api label;
 
     @track _selectedValues = null;
-    @track _fieldDescriptor = null;
     @track _showDropdown = false;
 
+    get normalizedConfiguredFieldName() {
+        if (!this.fieldApiName) {
+            return null;
+        }
+
+        const raw = String(this.fieldApiName).trim();
+        if (!raw) {
+            return null;
+        }
+
+        return raw.includes('.') ? raw.split('.').pop() : raw;
+    }
+
+    get resolvedFieldApiName() {
+        const configuredName = this.normalizedConfiguredFieldName;
+        if (!configuredName) {
+            return null;
+        }
+
+        const fields = this.objectInfo?.data?.fields;
+        if (!fields) {
+            return configuredName;
+        }
+
+        if (fields[configuredName]) {
+            return configuredName;
+        }
+
+        const directCaseInsensitive = Object.keys(fields).find(
+            key => key.toLowerCase() === configuredName.toLowerCase()
+        );
+        if (directCaseInsensitive) {
+            return directCaseInsensitive;
+        }
+
+        const targetLabel = configuredName.toLowerCase();
+        const matchedEntry = Object.entries(fields).find(([, fieldDef]) => {
+            const label = String(fieldDef?.label ?? '').trim().toLowerCase();
+            const dataType = String(fieldDef?.dataType ?? '').toLowerCase();
+            const isMultiPicklist = dataType === 'multipicklist' || dataType === 'multiselectpicklist';
+            return label === targetLabel && isMultiPicklist;
+        });
+
+        return matchedEntry ? matchedEntry[0] : configuredName;
+    }
+
     get _fields() {
-        if (this.objectApiName && this.fieldApiName) {
-            return [`${this.objectApiName}.${this.fieldApiName}`];
+        if (this.objectApiName && this.resolvedFieldApiName) {
+            return [`${this.objectApiName}.${this.resolvedFieldApiName}`];
         }
         return [];
     }
 
-    connectedCallback() {
-        if (this.objectApiName && this.fieldApiName) {
-            this._fieldDescriptor = `${this.objectApiName}.${this.fieldApiName}`;
+    get _fieldDescriptor() {
+        if (this.objectApiName && this.resolvedFieldApiName) {
+            return `${this.objectApiName}.${this.resolvedFieldApiName}`;
         }
+        return null;
     }
 
     @wire(getRecord, { recordId: '$recordId', fields: '$_fields' })
     wiredRecord({ data }) {
         if (data) {
-            const raw = data.fields[this.fieldApiName]?.value ?? '';
+            const raw = data.fields[this.resolvedFieldApiName]?.value ?? '';
             this._selectedValues = raw ? raw.split(';').map(v => v.trim()).filter(Boolean) : [];
         }
     }
@@ -68,15 +114,17 @@ export default class PrettyTag extends LightningElement {
     }
 
     get tagItems() {
-        return this.selectedValues.map((v, i) => ({
-            id: `${v}-${i}`,
-            label: v,
-            colorClass: `slds-badge tag-item ${COLOR_CLASSES[colorIndexForValue(v)]}`,
-        }));
-    }
+        const labelMap = new Map((this.picklistValues?.data?.values ?? []).map(option => [option.value, option.label]));
 
-    get hasTags() {
-        return this.tagItems.length > 0;
+        return this.selectedValues.map((value, i) => {
+            const displayLabel = labelMap.get(value) ?? value;
+            return {
+                id: `${value}-${i}`,
+                value,
+                label: displayLabel,
+                colorClass: `slds-badge tag-item ${COLOR_CLASSES[colorIndexForValue(value)]}`,
+            };
+        });
     }
 
     get availableOptions() {
@@ -109,9 +157,14 @@ export default class PrettyTag extends LightningElement {
     }
 
     _save() {
+        const targetField = this.resolvedFieldApiName;
+        if (!targetField) {
+            return;
+        }
+
         const fields = {
             Id: this.recordId,
-            [this.fieldApiName]: this._selectedValues.join(';'),
+            [targetField]: this._selectedValues.join(';'),
         };
         updateRecord({ fields })
             .then(() => {
